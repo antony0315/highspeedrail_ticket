@@ -89,6 +89,7 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
                 passsenger_id_input.send_keys(psg_id)
         except:
             pass
+    
     member_check = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberSystemRadio1")))
     member_check.click()
     member_check2 = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberShipCheckBox")))
@@ -101,6 +102,11 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
         EC.presence_of_element_located((By.ID, "isSubmit"))
     )
     submit.click()
+    
+    submit2=WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.NAME, "SubmitButton"))
+    )
+    submit2.click()
     try:
         submit=WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/div[7]/div/div[2]/input[2]"))
@@ -115,7 +121,6 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
         second_check.click()
     except:
         pass
-
 
 
 

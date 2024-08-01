@@ -79,16 +79,15 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
         EC.presence_of_element_located((By.NAME, 'email'))
     )
     order_email_input.send_keys(email)
-    if int(ticket_count)>1:
-        try:
-            for num,psg_id in enumerate(args):
-                passsenger_id_input_name = f"TicketPassengerInfoInputPanel:passengerDataView:{num}:passengerDataView2:passengerDataIdNumber"
-                passsenger_id_input=WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located((By.NAME, passsenger_id_input_name))
-                )
-                passsenger_id_input.send_keys(psg_id)
-        except:
-            pass
+    try:
+        for num,psg_id in enumerate(args):
+            passsenger_id_input_name = f"TicketPassengerInfoInputPanel:passengerDataView:{num}:passengerDataView2:passengerDataIdNumber"
+            passsenger_id_input=WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.NAME, passsenger_id_input_name))
+            )
+            passsenger_id_input.send_keys(psg_id)
+    except:
+        pass
     
     member_check = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberSystemRadio1")))
     member_check.click()

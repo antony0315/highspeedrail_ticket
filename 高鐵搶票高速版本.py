@@ -7,7 +7,7 @@ from datetime import datetime
 import undetected_chromedriver as uc
 
 
-def order_info_flow(ticket_count:str,startStation:str,destination:str,order_date:str,toTime:str):
+def order_info_flow(driver,ticket_count:str,startStation:str,destination:str,order_date:str,toTime:str):
     searchTime=str(int(toTime[:2])-2).zfill(2)+':'+'00'
     try:
         cookie_btn = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/div[3]/div/div/button')))
@@ -34,7 +34,7 @@ def order_info_flow(ticket_count:str,startStation:str,destination:str,order_date
     select_element=WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/main/section/div/div/form/div[4]/div[2]/div/div[2]/div[1]/select')))
     select_element=Select(select_element)
     select_element.select_by_visible_text(searchTime)
-    
+ 
     while True:
         with open('captcha.png', 'wb') as f:
             f.write(WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[6]/main/section/div/div/form/div[6]/div[2]/div/img'))).screenshot_as_png)
@@ -52,7 +52,7 @@ def order_info_flow(ticket_count:str,startStation:str,destination:str,order_date
 
 
  
-def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*args):   
+def complete_order(driver,orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*args):   
     elements = WebDriverWait(driver, 20).until(
     EC.presence_of_all_elements_located((By.ID, 'QueryArrival'))
     )
@@ -79,8 +79,9 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
         EC.presence_of_element_located((By.NAME, 'email'))
     )
     order_email_input.send_keys(email)
+    
     try:
-        for num,psg_id in enumerate(args):
+        for num,psg_id in enumerate(args[:int(ticket_count)]):
             passsenger_id_input_name = f"TicketPassengerInfoInputPanel:passengerDataView:{num}:passengerDataView2:passengerDataIdNumber"
             passsenger_id_input=WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.NAME, passsenger_id_input_name))
@@ -89,21 +90,32 @@ def complete_order(orderID:str,phone:str,email:str,toTime:str,ticket_count:str,*
     except:
         pass
     
-    member_check = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberSystemRadio1")))
-    member_check.click()
-    member_check2 = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberShipCheckBox")))
-    member_check2.click()
+    
+    try:
+        member_check = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberSystemRadio1")))
+        member_check.click()
+    except:
+        pass
 
-    check_box=WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "agree")))
-    check_box.click()
+    try:
+        member_check2 = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "memberShipCheckBox")))
+        member_check2.click()
+    except:
+        pass
+
+    try:
+        check_box=WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "agree")))
+        check_box.click()
+    except:
+        pass
     
     submit=WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.ID, "isSubmit"))
-    )
+          EC.presence_of_element_located((By.ID, "isSubmit"))
+      )
     submit.click()
     
     submit2=WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.NAME, "SubmitButton"))
+          EC.presence_of_element_located((By.NAME, "SubmitButton"))
     )
     submit2.click()
     try:
@@ -127,17 +139,28 @@ if __name__=='__main__':
     ticket_count='1'
     startStation="台中"
     destination="台北"
-    order_date="2024/07/30"
+    order_date="2024/08/20"
     toTime="08:40"
     orderID="L123456789"
-    psgID="L123456789","L123456789"
+    psgID="L123456789","L123456788"
     phone="0981064195"
     email="antony10283@gmail.com"
     driver=uc.Chrome()
     driver.get('https://irs.thsrc.com.tw/IMINT/?locale=tw')
+    order_info_flow(driver,ticket_count,startStation,destination,order_date,toTime)
+    complete_order(driver,orderID,phone,email,toTime,ticket_count,*psgID)
     
-    order_info_flow(ticket_count,startStation,destination,order_date,toTime)
-    complete_order(orderID,phone,email,toTime,ticket_count,psgID)
     
     
+    
+    
+    
+    
+   
+
+
+
+
+
+
     
